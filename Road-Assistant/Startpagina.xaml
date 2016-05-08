@@ -18,6 +18,7 @@
         <CommandBar Background="#FF639C85">
             <CommandBar.PrimaryCommands>
                 <AppBarButton Label="WaarBenIk?" Click="WaarBenIkAppBarButton_Click" Icon="World"/>
+                <AppBarButton Label="Locaties" Click="NavigeerLocaties_Click" Icon="Go"/>
 
             </CommandBar.PrimaryCommands>
         </CommandBar>
