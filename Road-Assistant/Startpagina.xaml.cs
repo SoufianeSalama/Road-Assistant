@@ -1,9 +1,11 @@
-﻿using Road_Assistant.Common;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using Road_Assistant.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -32,8 +34,9 @@ namespace Road_Assistant
     {
         private NavigationHelper navigationHelper;
         private ObservableDictionary defaultViewModel = new ObservableDictionary();
-       
 
+        private MobileServiceCollection<Places, Places> items;
+        private IMobileServiceTable<Places> placesTable = App.MobileService.GetTable<Places>();
 
         private Geolocator locator = new Geolocator();
         private Geoposition geoposition;
@@ -76,8 +79,9 @@ namespace Road_Assistant
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            await RefreshTodoItems();
 
             StartConfiguratie();
 
@@ -150,7 +154,7 @@ namespace Road_Assistant
             }
             else
             {
-               
+
 
                 locator.MovementThreshold = 20;
                 locator.ReportInterval = 1000;
@@ -213,6 +217,67 @@ namespace Road_Assistant
             {
                 throw new Exception("Failed to create initial page");
             }
+        }
+
+        private async Task RefreshTodoItems()
+        {
+            MobileServiceInvalidOperationException exception = null;
+            try
+            {
+                // This code refreshes the entries in the list view by querying the TodoItems table.
+                // The query excludes completed TodoItems.
+                items = await placesTable
+                    //.Where(todoItem => todoItem.Complete == false)
+                    .ToCollectionAsync();
+
+                //this.defaultViewModel["Items"] = items;
+
+            }
+            catch (MobileServiceInvalidOperationException e)
+            {
+                exception = e;
+            }
+
+            if (exception != null)
+            {
+                await new MessageDialog(exception.Message, "Error loading items").ShowAsync();
+            }
+            else
+            {
+                //ListItems.ItemsSource = items;
+                //this.ButtonSave.IsEnabled = true;
+
+                BasicGeoposition position = new BasicGeoposition();
+                List<PushPin> pushpins = new List<PushPin>();
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    position.Latitude = Convert.ToDouble(items[i].Latitude);
+                    position.Longitude = Convert.ToDouble(items[i].Longitude);
+
+                    Geopoint geopoint = new Geopoint(position);
+
+                    PushPin pushpin = new PushPin();
+                    pushpin.Name = items[i].Soort;
+                    pushpin.Location = geopoint;
+
+
+                    pushpins.Add(pushpin);
+
+
+
+                }
+                Pushpins.ItemsSource = pushpins;
+            }
+        }
+
+        private async void OnPushpinClicked(object sender, TappedRoutedEventArgs e)
+        {
+            Border border = sender as Border;
+            PushPin selectedPushpin = border.DataContext as PushPin;
+            MessageDialog dialog = new MessageDialog(selectedPushpin.Name);
+            await dialog.ShowAsync();
+
         }
     }
 }

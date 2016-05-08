@@ -45,8 +45,20 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <maps:MapControl Name="MyMap" Margin="0,0,-2.333,52" HorizontalAlignment="Center" Width="364" BorderThickness="0" Grid.ColumnSpan="2" />
-
+            <!--<maps:MapControl Name="MyMap" Margin="0,0,-2.333,52" HorizontalAlignment="Center" Width="364" BorderThickness="0" Grid.ColumnSpan="2" />-->
+            <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="0,0,1,0" Width="332" Grid.ColumnSpan="2">
+                <maps:MapItemsControl x:Name="Pushpins">
+                    <maps:MapItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="CornflowerBlue" Tapped="OnPushpinClicked">
+                                <TextBlock Text="{Binding Name}" Foreground="Black"
+                                maps:MapControl.Location="{Binding Location}"
+                                Style="{StaticResource TitleTextBlockStyle}" />
+                            </Border>
+                        </DataTemplate>
+                    </maps:MapItemsControl.ItemTemplate>
+                </maps:MapItemsControl>
+            </maps:MapControl>
         </Grid>
     </Grid>
 </Page>

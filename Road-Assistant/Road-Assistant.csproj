@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="Places.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushPin.cs" />
     <Compile Include="Startpagina.xaml.cs">
       <DependentUpon>Startpagina.xaml</DependentUpon>
     </Compile>
