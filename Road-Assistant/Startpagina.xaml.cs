@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
 using Windows.Services.Maps;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -75,12 +76,10 @@ namespace Road_Assistant
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
 
-            geoposition = await locator.GetGeopositionAsync();
-
-            Toonlocatie(geoposition);
+            StartConfiguratie();
 
         }
 
@@ -122,6 +121,60 @@ namespace Road_Assistant
         }
 
         #endregion
+
+
+        private async void StartConfiguratie()
+        {
+            //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
+
+
+
+            if (locator.LocationStatus == PositionStatus.Disabled)
+            {
+                dialog = new MessageDialog("De locatie service is uitgeschakeld!");
+                dialog.Commands.Add(new UICommand("Instellingen"));
+                dialog.Commands.Add(new UICommand("Annuleer"));
+
+                var resultaat = await dialog.ShowAsync();
+
+                if (resultaat.Label == "Annuleer")
+                {
+                    Application.Current.Exit();
+                }
+                if (resultaat.Label == "Instellingen")
+                {
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));     //Ga naar de locatie instellingen van de Phone
+                    Application.Current.Exit();
+                }
+
+            }
+            else
+            {
+                geoposition = await locator.GetGeopositionAsync();
+
+                Toonlocatie(geoposition);
+
+                locator.MovementThreshold = 20;
+                locator.ReportInterval = 1000;
+                locator.DesiredAccuracy = PositionAccuracy.High;
+                locator.PositionChanged += locator_PositionChanged;
+            }
+
+
+        }
+
+        async void locator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                Geoposition currentPosition = args.Position;
+
+                Toonlocatie(currentPosition);
+
+
+            });
+        }
+
 
         private async void WaarBenIkAppBarButton_Click(object sender, RoutedEventArgs e)
         {
