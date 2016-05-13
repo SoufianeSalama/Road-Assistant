@@ -134,7 +134,7 @@ namespace Road_Assistant
 
             if (exception != null)
             {
-                await new MessageDialog(exception.Message, "Error loading items").ShowAsync();
+                await new MessageDialog(exception.Message, "Error bij het laden van de data!").ShowAsync();
             }
             else
             {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
+using Windows.Devices.Geolocation.Geofencing;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
@@ -81,11 +82,21 @@ namespace Road_Assistant
         /// session.  The state will be null the first time a page is visited.</param>
         private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            await RefreshTodoItems();
-
+            //  Kijken of de Locatie instelling aan staat (en internet)
             StartConfiguratie();
 
+            // de data uit Azure halen en een lijst van objecten van de klasse Pushpin maken van de gekregen data
+            await RefreshTodoItems();
+
+            GeofenceMonitor.Current.GeofenceStateChanged += Current_GeofenceStateChanged;
+            GeofenceConfiguratie();
+
+
+
+
         }
+
+
 
         /// <summary>
         /// Preserves state associated with this page in case the application is suspended or the
@@ -160,12 +171,86 @@ namespace Road_Assistant
                 locator.ReportInterval = 1000;
                 locator.DesiredAccuracy = PositionAccuracy.High;
                 locator.PositionChanged += locator_PositionChanged;
+               
             }
 
 
         }
 
-        async void locator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
+        private void GeofenceConfiguratie()
+        {
+            GeofenceMonitor.Current.Geofences.Clear();
+            BasicGeoposition geofenceGeoposition = new BasicGeoposition();
+
+            //string id = "test";
+            double radius = 200;
+
+            
+
+            for (int i = 0; i< items.Count; i++)
+            {
+                geofenceGeoposition.Latitude = Convert.ToDouble(items[i].Latitude);
+                geofenceGeoposition.Longitude = Convert.ToDouble(items[i].Longitude);
+
+                
+
+                Geocircle geocircle = new Geocircle(geofenceGeoposition, radius);
+
+                MonitoredGeofenceStates mask = 0;
+                mask |= MonitoredGeofenceStates.Entered;
+
+                //mask |= MonitoredGeofenceStates.Exited;
+                //mask |= MonitoredGeofenceStates.Removed;
+                TimeSpan span = TimeSpan.FromSeconds(2);
+                Geofence geofence = new Geofence(i.ToString(), geocircle, mask, false, span);
+                GeofenceMonitor.Current.Geofences.Add(geofence);
+            }
+            
+
+        }
+
+
+        
+        private async void Current_GeofenceStateChanged(GeofenceMonitor sender, object args)
+        {
+            var reports = sender.ReadReports();
+            foreach (GeofenceStateChangeReport report in reports)
+            {
+                GeofenceState state = report.NewState;
+                switch (state)
+                {
+                    case GeofenceState.Entered:
+                        await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        {
+                            MessageDialog dialog = new MessageDialog("Opgelet, u nadert een gevaarlijk punt!");
+        
+                            await dialog.ShowAsync();
+                        });
+                        break;
+        //            case GeofenceState.Exited:
+        //                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+        //                {
+        //                    MessageDialog dialog = new MessageDialog("The user has left the
+        //area");
+        
+        //                    await dialog.ShowAsync();
+        //                });
+        //                break;
+        //            case GeofenceState.Removed:
+        //                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+        //                {
+        //                    MessageDialog dialog = new MessageDialog("The geofence has been
+        //removed");
+        
+        //                    await dialog.ShowAsync();
+        //                });
+        //                break;
+                }
+            }
+        }
+    
+
+        private async void locator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
@@ -176,8 +261,7 @@ namespace Road_Assistant
 
             });
         }
-
-
+            
         private async void WaarBenIkAppBarButton_Click(object sender, RoutedEventArgs e)
         {
             geoposition = await locator.GetGeopositionAsync();
@@ -195,7 +279,7 @@ namespace Road_Assistant
 
         private async void Toonlocatie(Geoposition geoposition)  //async
         {
-
+            MyMap.MapElements.Clear();
 
             await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);      // -> gaat inzoomen op uw huidige locatie
 
@@ -227,10 +311,10 @@ namespace Road_Assistant
                 // This code refreshes the entries in the list view by querying the TodoItems table.
                 // The query excludes completed TodoItems.
                 items = await placesTable
-                    //.Where(todoItem => todoItem.Complete == false)
+                    
                     .ToCollectionAsync();
 
-                //this.defaultViewModel["Items"] = items;
+                
 
             }
             catch (MobileServiceInvalidOperationException e)
@@ -240,13 +324,11 @@ namespace Road_Assistant
 
             if (exception != null)
             {
-                await new MessageDialog(exception.Message, "Error loading items").ShowAsync();
+                await new MessageDialog(exception.Message, "Error bij het laden van de data!").ShowAsync();
             }
             else
             {
-                //ListItems.ItemsSource = items;
-                //this.ButtonSave.IsEnabled = true;
-
+                
                 BasicGeoposition position = new BasicGeoposition();
                 List<PushPin> pushpins = new List<PushPin>();
 
@@ -273,10 +355,16 @@ namespace Road_Assistant
 
         private async void OnPushpinClicked(object sender, TappedRoutedEventArgs e)
         {
-            Border border = sender as Border;
-            PushPin selectedPushpin = border.DataContext as PushPin;
-            MessageDialog dialog = new MessageDialog(selectedPushpin.Name);
+            //Border border = sender as Border;
+            //PushPin selectedPushpin = border.DataContext as PushPin;
+            //MessageDialog dialog = new MessageDialog(selectedPushpin.Name);
+            //await dialog.ShowAsync();
+
+            Image image = sender as Image;
+            PushPin selectedPushpin = image.DataContext as PushPin;
+            MessageDialog dialog = new MessageDialog("Soort: " + selectedPushpin.Name);
             await dialog.ShowAsync();
+
 
         }
     }

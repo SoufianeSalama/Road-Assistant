@@ -50,13 +50,13 @@
                 <maps:MapItemsControl x:Name="Pushpins">
                     <maps:MapItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Tapped="OnPushpinClicked">
+                            <!--<Border Tapped="OnPushpinClicked">-->
                                 <!--<TextBlock Text="{Binding Name}" Foreground="Black"
                                 maps:MapControl.Location="{Binding Location}"
                                 Style="{StaticResource TitleTextBlockStyle}" />-->
 
-                                <Image maps:MapControl.Location="{Binding Location}"  Source="/Assets/Warning.png" Width="50" />
-                            </Border>
+                                <Image maps:MapControl.Location="{Binding Location}" Tapped="OnPushpinClicked"  Source="/Assets/Warning.png" Width="50" />
+                            <!--</Border>-->
                         </DataTemplate>
                     </maps:MapItemsControl.ItemTemplate>
                 </maps:MapItemsControl>
