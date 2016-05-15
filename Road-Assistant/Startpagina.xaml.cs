@@ -43,6 +43,7 @@ namespace Road_Assistant
         private Geoposition geoposition;
 
         private MessageDialog dialog;
+
         public Startpagina()
         {
             this.InitializeComponent();
@@ -149,7 +150,7 @@ namespace Road_Assistant
                 dialog = new MessageDialog("De locatie service is uitgeschakeld!");
                 dialog.Commands.Add(new UICommand("Instellingen"));
                 dialog.Commands.Add(new UICommand("Annuleer"));
-
+          
                 var resultaat = await dialog.ShowAsync();
 
                 if (resultaat.Label == "Annuleer")
@@ -223,7 +224,8 @@ namespace Road_Assistant
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                         {
                             MessageDialog dialog = new MessageDialog("Opgelet, u nadert een gevaarlijk punt!");
-        
+                            //Melding.AutoPlay = true;
+                            Melding.Play();
                             await dialog.ShowAsync();
                         });
                         break;
@@ -281,7 +283,7 @@ namespace Road_Assistant
         {
             MyMap.MapElements.Clear();
 
-            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);      // -> gaat inzoomen op uw huidige locatie
+            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 12);      // -> gaat inzoomen op uw huidige locatie
 
 
             MapIcon icon = new MapIcon();

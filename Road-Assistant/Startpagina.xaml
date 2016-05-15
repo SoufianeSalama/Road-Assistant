@@ -61,6 +61,8 @@
                     </maps:MapItemsControl.ItemTemplate>
                 </maps:MapItemsControl>
             </maps:MapControl>
+
+            <MediaElement Name="Melding" AutoPlay="False" Source="/Assets/melding.wav"></MediaElement>
         </Grid>
     </Grid>
 </Page>
