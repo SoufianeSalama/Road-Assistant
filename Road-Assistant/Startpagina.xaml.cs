@@ -6,11 +6,13 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources;
 using Windows.Devices.Geolocation;
 using Windows.Devices.Geolocation.Geofencing;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Networking.Connectivity;
 using Windows.Services.Maps;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -43,6 +45,8 @@ namespace Road_Assistant
         private Geoposition geoposition;
 
         private MessageDialog dialog;
+
+        private ResourceLoader loader = new ResourceLoader();
 
         public Startpagina()
         {
@@ -143,23 +147,28 @@ namespace Road_Assistant
         {
             //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
 
+            string TitleErrorLocation = loader.GetString("TitleErrorLocation/Text");
+            string ContentErrorLocation = loader.GetString("ContentErrorLocation/Text");
 
+            string buttonSettingsText = loader.GetString("btnSettings/Text");
+            string buttonCancelText = loader.GetString("btnCancel/Text");
 
-            if (locator.LocationStatus == PositionStatus.Disabled)
+            if ( (locator.LocationStatus == PositionStatus.Disabled) )
             {
-                dialog = new MessageDialog("De locatie service is uitgeschakeld!");
-                dialog.Commands.Add(new UICommand("Instellingen"));
-                dialog.Commands.Add(new UICommand("Annuleer"));
+                dialog = new MessageDialog(ContentErrorLocation);
+                dialog.Title = TitleErrorLocation;
+                dialog.Commands.Add(new UICommand(buttonSettingsText));
+                dialog.Commands.Add(new UICommand(buttonCancelText));
           
                 var resultaat = await dialog.ShowAsync();
 
-                if (resultaat.Label == "Annuleer")
+                if (resultaat.Label == buttonCancelText)
                 {
                     Application.Current.Exit();
                 }
-                if (resultaat.Label == "Instellingen")
+                if (resultaat.Label == buttonSettingsText)
                 {
-                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));     //Ga naar de locatie instellingen van de Phone
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));    //Ga naar de locatie instellingen van de Phone
                     Application.Current.Exit();
                 }
 
@@ -266,29 +275,37 @@ namespace Road_Assistant
             
         private async void WaarBenIkAppBarButton_Click(object sender, RoutedEventArgs e)
         {
+            //ResourceLoader loader = new ResourceLoader();
+
+            string title = loader.GetString("TitleWhereAmI/Text");
+            string content = loader.GetString("ContentWhereAmI/Text");
+
             geoposition = await locator.GetGeopositionAsync();
             MapLocationFinderResult result = await MapLocationFinder.FindLocationsAtAsync(geoposition.Coordinate.Point);
 
             if (result.Status == MapLocationFinderStatus.Success)
             {
                 MapAddress address = result.Locations.FirstOrDefault().Address;
-                string fullAddress = string.Format("U bent in de buurt van: {0}, {1}.", address.Street, address.Town);
+                string fullAddress = string.Format(address.Street + ", " +  address.Town);
+                
+                dialog = new MessageDialog( content +fullAddress);  
+                dialog.Title = title;
 
-                dialog = new MessageDialog(fullAddress);
                 await dialog.ShowAsync();
             }
         }
 
-        private async void Toonlocatie(Geoposition geoposition)  //async
+        private async void Toonlocatie(Geoposition geoposition) 
         {
             MyMap.MapElements.Clear();
 
-            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 12);      // -> gaat inzoomen op uw huidige locatie
+            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);      // -> gaat inzoomen op uw huidige locatie
 
+            string title = loader.GetString("TitlePosition/Text");
 
             MapIcon icon = new MapIcon();
             icon.Location = geoposition.Coordinate.Point;
-            icon.Title = "Uw Positie";
+            icon.Title = title; // "Uw Positie";
 
             //icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("msappx:///Assets/logo.jpg"));
 
@@ -327,6 +344,7 @@ namespace Road_Assistant
             if (exception != null)
             {
                 await new MessageDialog(exception.Message, "Error bij het laden van de data!").ShowAsync();
+
             }
             else
             {
@@ -364,7 +382,10 @@ namespace Road_Assistant
 
             Image image = sender as Image;
             PushPin selectedPushpin = image.DataContext as PushPin;
-            MessageDialog dialog = new MessageDialog("Soort: " + selectedPushpin.Name);
+
+            string titlePushPin = loader.GetString("TitlePushPinSoort/Text");
+
+            MessageDialog dialog = new MessageDialog(titlePushPin + selectedPushpin.Name);
             await dialog.ShowAsync();
 
 

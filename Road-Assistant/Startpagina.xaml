@@ -17,7 +17,7 @@
     <Page.BottomAppBar>
         <CommandBar Background="#FF639C85">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Label="WaarBenIk?" Click="WaarBenIkAppBarButton_Click" Icon="World"/>
+                <AppBarButton Label="test" x:Uid="LabelWhereAmI" Click="WaarBenIkAppBarButton_Click" Icon="World"/> <!--x:Uid="LabelWhereAmI"-->
                 <AppBarButton Label="Locaties" Click="NavigeerLocaties_Click" Icon="Go"/>
 
             </CommandBar.PrimaryCommands>
