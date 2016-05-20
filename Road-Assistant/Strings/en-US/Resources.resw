@@ -127,7 +127,7 @@
     <value>The location services are disabled!</value>
   </data>
   <data name="ContentWhereAmI.Text" xml:space="preserve">
-    <value>U are near: </value>
+    <value>You are near: </value>
   </data>
   <data name="LabelWhereAmI.Label" xml:space="preserve">
     <value>WhereAmI?</value>
@@ -143,5 +143,11 @@
   </data>
   <data name="TitleWhereAmI.Text" xml:space="preserve">
     <value>Where am I?</value>
+  </data>
+  <data name="ContentGeofence.Text" xml:space="preserve">
+    <value>You are entering a dangerous location!</value>
+  </data>
+  <data name="TitleGeofence.Text" xml:space="preserve">
+    <value>Warning!</value>
   </data>
 </root>

@@ -28,8 +28,15 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+            
+            <!--<StackPanel Grid.Row="0" Margin="19,0,0,0">
+                <CheckBox x:Name="FlitspalenCheck" Click="Toon" Content="Flitspalen"  IsChecked="true" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <CheckBox x:Name="OngevallenCheck" Click="Toon" Content="Ongevallen" IsChecked="true" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                <CheckBox x:Name="ControlesCheck" Click="Toon" Content="Controles" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsChecked="True"/>
 
-            <ListView Name="ListItems">
+            </StackPanel>-->
+            
+            <ListView Name="ListItems" Margin="0,170,0,-1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

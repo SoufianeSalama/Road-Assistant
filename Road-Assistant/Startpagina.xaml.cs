@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Globalization;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -48,6 +49,8 @@ namespace Road_Assistant
 
         private ResourceLoader loader = new ResourceLoader();
 
+        private NumberFormatInfo nfi = new NumberFormatInfo();
+
         public Startpagina()
         {
             this.InitializeComponent();
@@ -55,6 +58,8 @@ namespace Road_Assistant
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+
+            nfi.NumberDecimalSeparator = ".";
         }
 
         /// <summary>
@@ -147,13 +152,17 @@ namespace Road_Assistant
         {
             //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
 
+            ConnectionProfile profile = NetworkInformation.GetInternetConnectionProfile();
+            NetworkConnectivityLevel connectivityLevel = profile.GetNetworkConnectivityLevel();
+
             string TitleErrorLocation = loader.GetString("TitleErrorLocation/Text");
             string ContentErrorLocation = loader.GetString("ContentErrorLocation/Text");
 
             string buttonSettingsText = loader.GetString("btnSettings/Text");
             string buttonCancelText = loader.GetString("btnCancel/Text");
 
-            if ( (locator.LocationStatus == PositionStatus.Disabled) )
+
+            if ( (locator.LocationStatus == PositionStatus.Disabled))      // || (connectivityLevel != NetworkConnectivityLevel.InternetAccess)  controle internet niveau
             {
                 dialog = new MessageDialog(ContentErrorLocation);
                 dialog.Title = TitleErrorLocation;
@@ -199,8 +208,8 @@ namespace Road_Assistant
 
             for (int i = 0; i< items.Count; i++)
             {
-                geofenceGeoposition.Latitude = Convert.ToDouble(items[i].Latitude);
-                geofenceGeoposition.Longitude = Convert.ToDouble(items[i].Longitude);
+                geofenceGeoposition.Latitude = Convert.ToDouble(items[i].Latitude, nfi);
+                geofenceGeoposition.Longitude = Convert.ToDouble(items[i].Longitude, nfi);
 
                 
 
@@ -232,9 +241,15 @@ namespace Road_Assistant
                     case GeofenceState.Entered:
                         await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
                         {
-                            MessageDialog dialog = new MessageDialog("Opgelet, u nadert een gevaarlijk punt!");
+                            string TitleGeofence = loader.GetString("TitleGeofence/Text");
+                            string ContentGeofence = loader.GetString("ContentGeofence/Text");
+
+                            dialog = new MessageDialog(ContentGeofence);
+                            dialog.Title = TitleGeofence;
+                            Melding.Volume = 1;     // een schaal tussen 0 en 1 (en 0.5 is default)
                             //Melding.AutoPlay = true;
                             Melding.Play();
+
                             await dialog.ShowAsync();
                         });
                         break;
@@ -275,8 +290,7 @@ namespace Road_Assistant
             
         private async void WaarBenIkAppBarButton_Click(object sender, RoutedEventArgs e)
         {
-            //ResourceLoader loader = new ResourceLoader();
-
+           
             string title = loader.GetString("TitleWhereAmI/Text");
             string content = loader.GetString("ContentWhereAmI/Text");
 
@@ -288,7 +302,7 @@ namespace Road_Assistant
                 MapAddress address = result.Locations.FirstOrDefault().Address;
                 string fullAddress = string.Format(address.Street + ", " +  address.Town);
                 
-                dialog = new MessageDialog( content +fullAddress);  
+                dialog = new MessageDialog( content + fullAddress);  
                 dialog.Title = title;
 
                 await dialog.ShowAsync();
@@ -301,11 +315,11 @@ namespace Road_Assistant
 
             await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);      // -> gaat inzoomen op uw huidige locatie
 
-            string title = loader.GetString("TitlePosition/Text");
+            string TitlePosition = loader.GetString("TitlePosition/Text");
 
             MapIcon icon = new MapIcon();
             icon.Location = geoposition.Coordinate.Point;
-            icon.Title = title; // "Uw Positie";
+            icon.Title = TitlePosition; // "Uw Positie";
 
             //icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("msappx:///Assets/logo.jpg"));
 
@@ -354,8 +368,8 @@ namespace Road_Assistant
 
                 for (int i = 0; i < items.Count; i++)
                 {
-                    position.Latitude = Convert.ToDouble(items[i].Latitude);
-                    position.Longitude = Convert.ToDouble(items[i].Longitude);
+                    position.Latitude = Convert.ToDouble(items[i].Latitude,nfi);
+                    position.Longitude = Convert.ToDouble(items[i].Longitude,nfi);
 
                     Geopoint geopoint = new Geopoint(position);
 

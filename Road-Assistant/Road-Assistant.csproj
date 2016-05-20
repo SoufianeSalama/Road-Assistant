@@ -83,6 +83,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <PRIResource Include="Strings\nl-be\Resources.resw" />
+    <PRIResource Include="Strings\fr\Resources.resw" />
     <PRIResource Include="Strings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>

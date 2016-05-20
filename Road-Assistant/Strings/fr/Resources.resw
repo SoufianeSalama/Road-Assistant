@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="btnCancel.Text" xml:space="preserve">
-    <value>Annuleer</value>
+    <value>Annuler</value>
   </data>
   <data name="btnSettings.Text" xml:space="preserve">
-    <value>Instellingen</value>
+    <value>Paramètres</value>
   </data>
   <data name="ContentErrorLocation.Text" xml:space="preserve">
-    <value>De locatie service is uitgeschakeld!</value>
+    <value>Les services de localisation sont désactivés!</value>
   </data>
   <data name="ContentWhereAmI.Text" xml:space="preserve">
-    <value>U ben in de buurt van: </value>
-  </data>
-  <data name="TitleErrorLocation.Text" xml:space="preserve">
-    <value>Fout!</value>
-  </data>
-  <data name="TitlePosition.Text" xml:space="preserve">
-    <value>Uw positie</value>
-  </data>
-  <data name="TitlePushPinSoort.Text" xml:space="preserve">
-    <value>Soort:</value>
-  </data>
-  <data name="TitleWhereAmI.Text" xml:space="preserve">
-    <value>Waar ben ik?</value>
-  </data>
-  <data name="ContentGeofence.Text" xml:space="preserve">
-    <value>U betreedt een gevaarlijke locatie!</value>
-  </data>
-  <data name="TitleGeofence.Text" xml:space="preserve">
-    <value>Opgelet!</value>
+    <value>Vous êtes près:</value>
   </data>
   <data name="LabelWhereAmI.Label" xml:space="preserve">
-    <value>WaarBenIk?</value>
+    <value>OùSuis-Je?</value>
+  </data>
+  <data name="TitleErrorLocation.Text" xml:space="preserve">
+    <value>Erreur!</value>
+  </data>
+  <data name="TitlePosition.Text" xml:space="preserve">
+    <value>Ta position</value>
+  </data>
+  <data name="TitlePushPinSoort.Text" xml:space="preserve">
+    <value>Genre:</value>
+  </data>
+  <data name="TitleWhereAmI.Text" xml:space="preserve">
+    <value>Où Suis-Je?</value>
+  </data>
+  <data name="ContentGeofence.Text" xml:space="preserve">
+    <value>Vous entrez dans un endroit dangereux!</value>
+  </data>
+  <data name="TitleGeofence.Text" xml:space="preserve">
+    <value>Attention!</value>
   </data>
 </root>
