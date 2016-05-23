@@ -150,4 +150,22 @@
   <data name="LabelWhereAmI.Label" xml:space="preserve">
     <value>WaarBenIk?</value>
   </data>
+  <data name="LabelLocations.Label" xml:space="preserve">
+    <value>Locaties </value>
+  </data>
+  <data name="TextBlockKind.Text" xml:space="preserve">
+    <value>Soort:</value>
+  </data>
+  <data name="TextBlockLat.Text" xml:space="preserve">
+    <value>Latitude:</value>
+  </data>
+  <data name="TextBlockLon.Text" xml:space="preserve">
+    <value>Longitude:</value>
+  </data>
+  <data name="TitleLocations.Text" xml:space="preserve">
+    <value>locatie lijst</value>
+  </data>
+  <data name="LabelBack.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
 </root>

@@ -5,8 +5,32 @@
     xmlns:local="using:Road_Assistant"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Background="#FF2A6872">
-
+    mc:Ignorable="d" >
+    
+    <Page.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="Black" Offset="0"/>
+            <GradientStop Color="#FF458BAC" Offset="1"/>
+        </LinearGradientBrush>
+    </Page.Background>
+    
+    
+    <Page.Resources>
+        <Style x:Key="TextBlockStyle" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="20"/>
+        </Style>
+   </Page.Resources>
+    
+    <Page.BottomAppBar>
+        <CommandBar Background="#FF639C85">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Label="XX" x:Uid="LabelBack" Click="AppBarButton_Click" Icon="Back"/>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+    
     <Grid x:Name="LayoutRoot">
 
         <Grid.ChildrenTransitions>
@@ -23,28 +47,35 @@
         <!-- Title Panel -->
         <StackPanel Grid.Row="0" Margin="19,0,0,0">
             <TextBlock Text="ROAD-ASSISTANT" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
-            <TextBlock Text="locatie lijst" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+            <TextBlock Text="XX" x:Uid="TitleLocations" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            
-            <!--<StackPanel Grid.Row="0" Margin="19,0,0,0">
-                <CheckBox x:Name="FlitspalenCheck" Click="Toon" Content="Flitspalen"  IsChecked="true" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <CheckBox x:Name="OngevallenCheck" Click="Toon" Content="Ongevallen" IsChecked="true" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-                <CheckBox x:Name="ControlesCheck" Click="Toon" Content="Controles" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsChecked="True"/>
 
-            </StackPanel>-->
-            
-            <ListView Name="ListItems" Margin="0,170,0,-1">
+            <ListView Name="ListItems" > <!--IsItemClickEnabled="True" ItemClick="ListItems_ItemClick"-->
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
+                        <StackPanel Margin="5">
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="XX" x:Uid="TextBlockKind" Style="{StaticResource TextBlockStyle}" FontWeight="Bold"/>
 
-                            <TextBlock Text="{Binding Soort}" FontSize="18" FontWeight="Bold" />
-                            <TextBlock Text="{Binding Latitude}" FontSize="14" />
-                            <TextBlock Text="{Binding Longitude}" FontSize="14" />
+                                <TextBlock Text="{Binding Soort}" Style="{StaticResource TextBlockStyle }" />
+                            </StackPanel>
 
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="XX" x:Uid="TextBlockLat" Style="{StaticResource TextBlockStyle }" FontWeight="Bold"/>
+
+                                <TextBlock Text="{Binding Latitude}" Style="{StaticResource TextBlockStyle }" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="XX" x:Uid="TextBlockLon" Style="{StaticResource TextBlockStyle }" FontWeight="Bold"/>
+
+                                <TextBlock Text="{Binding Longitude}" Style="{StaticResource TextBlockStyle }" />
+                            </StackPanel>
+                            
+                  
                         </StackPanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>

@@ -150,4 +150,22 @@
   <data name="TitleGeofence.Text" xml:space="preserve">
     <value>Attention!</value>
   </data>
+  <data name="LabelBack.Label" xml:space="preserve">
+    <value>Retourner</value>
+  </data>
+  <data name="LabelLocations.Label" xml:space="preserve">
+    <value>Localisations</value>
+  </data>
+  <data name="TextBlockKind.Text" xml:space="preserve">
+    <value>Genre:</value>
+  </data>
+  <data name="TextBlockLat.Text" xml:space="preserve">
+    <value>Latitude: </value>
+  </data>
+  <data name="TextBlockLon.Text" xml:space="preserve">
+    <value>Longitude: </value>
+  </data>
+  <data name="TitleLocations.Text" xml:space="preserve">
+    <value>liste des localisation</value>
+  </data>
 </root>

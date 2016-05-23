@@ -17,8 +17,8 @@
     <Page.BottomAppBar>
         <CommandBar Background="#FF639C85">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Label="test" x:Uid="LabelWhereAmI" Click="WaarBenIkAppBarButton_Click" Icon="World"/> <!--x:Uid="LabelWhereAmI"-->
-                <AppBarButton Label="Locaties" Click="NavigeerLocaties_Click" Icon="Go"/>
+                <AppBarButton Label="XX" x:Uid="LabelWhereAmI" Click="WaarBenIkAppBarButton_Click" Icon="World"/> 
+                <AppBarButton Label="XX" x:Uid="LabelLocations" Click="NavigeerLocaties_Click" Icon="Go"/>
 
             </CommandBar.PrimaryCommands>
         </CommandBar>
@@ -45,18 +45,13 @@
 
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            <!--<maps:MapControl Name="MyMap" Margin="0,0,-2.333,52" HorizontalAlignment="Center" Width="364" BorderThickness="0" Grid.ColumnSpan="2" />-->
+            
             <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="0,0,1,0" Width="332" Grid.ColumnSpan="2">
                 <maps:MapItemsControl x:Name="Pushpins">
                     <maps:MapItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <!--<Border Tapped="OnPushpinClicked">-->
-                                <!--<TextBlock Text="{Binding Name}" Foreground="Black"
-                                maps:MapControl.Location="{Binding Location}"
-                                Style="{StaticResource TitleTextBlockStyle}" />-->
-
-                                <Image maps:MapControl.Location="{Binding Location}" Tapped="OnPushpinClicked"  Source="/Assets/Warning.png" Width="50" />
-                            <!--</Border>-->
+                             <Image maps:MapControl.Location="{Binding Location}" Tapped="OnPushpinClicked"  Source="/Assets/Warning.png" Width="50" />
+                           
                         </DataTemplate>
                     </maps:MapItemsControl.ItemTemplate>
                 </maps:MapItemsControl>

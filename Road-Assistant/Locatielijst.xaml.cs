@@ -6,9 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Services.Maps;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -33,6 +35,8 @@ namespace Road_Assistant
 
         private MobileServiceCollection<Places, Places> items;
         private IMobileServiceTable<Places> placesTable = App.MobileService.GetTable<Places>();
+
+        private MessageDialog dialog;
 
         public Locatielijst()
         {
@@ -71,9 +75,11 @@ namespace Road_Assistant
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-            await RefreshTodoItems();
+            
+            items = (MobileServiceCollection<Places, Places>)e.NavigationParameter;
+            ToonLocaties();
         }
 
         /// <summary>
@@ -115,34 +121,51 @@ namespace Road_Assistant
 
         #endregion
 
-
-        private async Task RefreshTodoItems()
+        private void ToonLocaties()
         {
-            MobileServiceInvalidOperationException exception = null;
-            try
+            ListItems.ItemsSource = items;
+        }
+       
+        private void AppBarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Frame.Navigate(typeof(Startpagina)))
             {
-                // This code refreshes the entries in the list view by querying the TodoItems table.
-                // The query excludes completed TodoItems.
-                items = await placesTable
-                    //.Where(todoItem => todoItem.Complete == false)
-                    .ToCollectionAsync();
-            }
-            catch (MobileServiceInvalidOperationException e)
-            {
-                exception = e;
-            }
-
-            if (exception != null)
-            {
-                await new MessageDialog(exception.Message, "Error bij het laden van de data!").ShowAsync();
-            }
-            else
-            {
-                ListItems.ItemsSource = items;
-               
+                throw new Exception("Failed to create initial page");
             }
         }
 
-       
+        private async void ListItems_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var itemLat = ((Places)e.ClickedItem).Latitude;
+            var itemLon = ((Places)e.ClickedItem).Longitude;
+
+
+            Geolocator locator = new Geolocator();
+            Geoposition geoposition = await locator.GetGeopositionAsync();
+
+            ////BasicGeoposition bgp = new BasicGeoposition();
+            //geoposition.Coordinate.Latitude = Convert.ToDouble(itemLat);
+            //bgp.Latitude = Convert.ToDouble(itemLat);
+            //bgp.Latitude = Convert.ToDouble(itemLon);
+            
+
+
+            MapLocationFinderResult result = await MapLocationFinder.FindLocationsAtAsync(geoposition.Coordinate.Point);
+            //MapLocationFinderResult result = await MapLocationFinder.FindLocationsAtAsync();
+
+
+            if (result.Status == MapLocationFinderStatus.Success)
+            {
+                MapAddress address = result.Locations.FirstOrDefault().Address;
+                //string fullAddress = string.Format(address.Street + ", " + address.Town);
+
+                dialog = new MessageDialog("Dit gevaarlijk punt bevint zich op:" + address.Street + ", " + address.Town);
+                //dialog.Title = title;
+
+                await dialog.ShowAsync();
+            }
+
+            
+        }
     }
 }

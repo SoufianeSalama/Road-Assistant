@@ -30,7 +30,7 @@ namespace Road_Assistant
 
         public static MobileServiceClient MobileService = new MobileServiceClient(
           "https://road-assistant.azurewebsites.net"
-      );
+        );
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code

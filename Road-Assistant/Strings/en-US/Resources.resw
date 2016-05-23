@@ -124,7 +124,7 @@
     <value>Settings</value>
   </data>
   <data name="ContentErrorLocation.Text" xml:space="preserve">
-    <value>The location services are disabled!</value>
+    <value>The location services are disabled or you're not connected to the internet!</value>
   </data>
   <data name="ContentWhereAmI.Text" xml:space="preserve">
     <value>You are near: </value>
@@ -149,5 +149,23 @@
   </data>
   <data name="TitleGeofence.Text" xml:space="preserve">
     <value>Warning!</value>
+  </data>
+  <data name="LabelBack.Label" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="LabelLocations.Label" xml:space="preserve">
+    <value>Locations</value>
+  </data>
+  <data name="TextBlockKind.Text" xml:space="preserve">
+    <value>Kind: </value>
+  </data>
+  <data name="TextBlockLat.Text" xml:space="preserve">
+    <value>Latitude: </value>
+  </data>
+  <data name="TextBlockLon.Text" xml:space="preserve">
+    <value>Longitude: </value>
+  </data>
+  <data name="TitleLocations.Text" xml:space="preserve">
+    <value>locations list</value>
   </data>
 </root>

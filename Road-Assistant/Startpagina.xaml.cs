@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Globalization;
+using Windows.Storage;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -44,12 +45,14 @@ namespace Road_Assistant
 
         private Geolocator locator = new Geolocator();
         private Geoposition geoposition;
+        private BasicGeoposition basicGeoposition;
 
         private MessageDialog dialog;
 
         private ResourceLoader loader = new ResourceLoader();
 
         private NumberFormatInfo nfi = new NumberFormatInfo();
+        
 
         public Startpagina()
         {
@@ -60,6 +63,7 @@ namespace Road_Assistant
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
 
             nfi.NumberDecimalSeparator = ".";
+            nfi.CurrencyDecimalDigits = 4;
         }
 
         /// <summary>
@@ -90,16 +94,23 @@ namespace Road_Assistant
         /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
         /// a dictionary of state preserved by this page during an earlier
         /// session.  The state will be null the first time a page is visited.</param>
-        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private async  void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             //  Kijken of de Locatie instelling aan staat (en internet)
-            StartConfiguratie();
+            StartControle();
 
             // de data uit Azure halen en een lijst van objecten van de klasse Pushpin maken van de gekregen data
-            await RefreshTodoItems();
+            await GetLocaties();
 
-            GeofenceMonitor.Current.GeofenceStateChanged += Current_GeofenceStateChanged;
+            // de positionChanged event parameters instellen 
+            LocatieConfiguratie();
+
+            // de geofence parameters isntellen
             GeofenceConfiguratie();
+
+            
+
+           
 
 
 
@@ -148,7 +159,7 @@ namespace Road_Assistant
         #endregion
 
 
-        private async void StartConfiguratie()
+        private async void StartControle()
         {
             //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
 
@@ -162,13 +173,15 @@ namespace Road_Assistant
             string buttonCancelText = loader.GetString("btnCancel/Text");
 
 
-            if ( (locator.LocationStatus == PositionStatus.Disabled))      // || (connectivityLevel != NetworkConnectivityLevel.InternetAccess)  controle internet niveau
+
+
+            if ((locator.LocationStatus == PositionStatus.Disabled) || (connectivityLevel == NetworkConnectivityLevel.LocalAccess))      // Controleren of locatie en internet aanstaat op het toestel
             {
                 dialog = new MessageDialog(ContentErrorLocation);
                 dialog.Title = TitleErrorLocation;
                 dialog.Commands.Add(new UICommand(buttonSettingsText));
                 dialog.Commands.Add(new UICommand(buttonCancelText));
-          
+
                 var resultaat = await dialog.ShowAsync();
 
                 if (resultaat.Label == buttonCancelText)
@@ -177,55 +190,57 @@ namespace Road_Assistant
                 }
                 if (resultaat.Label == buttonSettingsText)
                 {
-                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));    //Ga naar de locatie instellingen van de Phone
+                    //await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings-location:"));    //Ga naar de locatie instellingen van de Phone
+                    //await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:network-cellular"));    //Ga naar de Mobiele internet instellingen van de Phone
+
+                    await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:"));
+
                     Application.Current.Exit();
                 }
 
             }
             else
             {
-
-
-                locator.MovementThreshold = 20;
-                locator.ReportInterval = 1000;
-                locator.DesiredAccuracy = PositionAccuracy.High;
-                locator.PositionChanged += locator_PositionChanged;
-               
+                GeofenceMonitor.Current.GeofenceStateChanged += Current_GeofenceStateChanged;
             }
+           
 
+        }
 
+        private void LocatieConfiguratie()
+        {
+
+            locator.MovementThreshold = 20;
+            locator.ReportInterval = 1000;
+            locator.DesiredAccuracy = PositionAccuracy.High;
+            locator.PositionChanged += locator_PositionChanged;
         }
 
         private void GeofenceConfiguratie()
         {
-            GeofenceMonitor.Current.Geofences.Clear();
-            BasicGeoposition geofenceGeoposition = new BasicGeoposition();
-
-            //string id = "test";
-            double radius = 200;
-
             
 
+            GeofenceMonitor.Current.Geofences.Clear();
+            basicGeoposition = new BasicGeoposition();
+            
+            double radius = 200;
+            
             for (int i = 0; i< items.Count; i++)
             {
-                geofenceGeoposition.Latitude = Convert.ToDouble(items[i].Latitude, nfi);
-                geofenceGeoposition.Longitude = Convert.ToDouble(items[i].Longitude, nfi);
-
+                basicGeoposition.Latitude = Convert.ToDouble(items[i].Latitude, nfi);
+                basicGeoposition.Longitude = Convert.ToDouble(items[i].Longitude, nfi);
                 
-
-                Geocircle geocircle = new Geocircle(geofenceGeoposition, radius);
+                Geocircle geocircle = new Geocircle(basicGeoposition, radius);
 
                 MonitoredGeofenceStates mask = 0;
                 mask |= MonitoredGeofenceStates.Entered;
 
-                //mask |= MonitoredGeofenceStates.Exited;
-                //mask |= MonitoredGeofenceStates.Removed;
                 TimeSpan span = TimeSpan.FromSeconds(2);
                 Geofence geofence = new Geofence(i.ToString(), geocircle, mask, false, span);
                 GeofenceMonitor.Current.Geofences.Add(geofence);
             }
-            
 
+           
         }
 
 
@@ -253,24 +268,7 @@ namespace Road_Assistant
                             await dialog.ShowAsync();
                         });
                         break;
-        //            case GeofenceState.Exited:
-        //                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-        //                {
-        //                    MessageDialog dialog = new MessageDialog("The user has left the
-        //area");
         
-        //                    await dialog.ShowAsync();
-        //                });
-        //                break;
-        //            case GeofenceState.Removed:
-        //                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-        //                {
-        //                    MessageDialog dialog = new MessageDialog("The geofence has been
-        //removed");
-        
-        //                    await dialog.ShowAsync();
-        //                });
-        //                break;
                 }
             }
         }
@@ -317,8 +315,13 @@ namespace Road_Assistant
 
             string TitlePosition = loader.GetString("TitlePosition/Text");
 
+            //double lat = Convert.ToDouble()
+
+
             MapIcon icon = new MapIcon();
             icon.Location = geoposition.Coordinate.Point;
+
+            //icon.Location = Convert.ToDouble(geoposition.Coordinate.Point.Position.Latitude, nfi);
             icon.Title = TitlePosition; // "Uw Positie";
 
             //icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("msappx:///Assets/logo.jpg"));
@@ -330,13 +333,39 @@ namespace Road_Assistant
 
         private void NavigeerLocaties_Click(object sender, RoutedEventArgs e)
         {
-            if (!Frame.Navigate(typeof(Locatielijst)))
+            if (!Frame.Navigate(typeof(Locatielijst), items))
             {
                 throw new Exception("Failed to create initial page");
             }
         }
 
-        private async Task RefreshTodoItems()
+
+        private void ZetLocatiesOpMap()
+        {
+            BasicGeoposition position = new BasicGeoposition();
+            List<PushPin> pushpins = new List<PushPin>();
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                position.Latitude = Convert.ToDouble(items[i].Latitude, nfi);
+                position.Longitude = Convert.ToDouble(items[i].Longitude, nfi);
+
+                Geopoint geopoint = new Geopoint(position);
+
+                PushPin pushpin = new PushPin();
+                pushpin.Name = items[i].Soort;
+                pushpin.Location = geopoint;
+
+
+                pushpins.Add(pushpin);
+
+
+
+            }
+            Pushpins.ItemsSource = pushpins;
+        }
+
+        private async Task GetLocaties()
         {
             MobileServiceInvalidOperationException exception = null;
             try
@@ -362,28 +391,8 @@ namespace Road_Assistant
             }
             else
             {
-                
-                BasicGeoposition position = new BasicGeoposition();
-                List<PushPin> pushpins = new List<PushPin>();
 
-                for (int i = 0; i < items.Count; i++)
-                {
-                    position.Latitude = Convert.ToDouble(items[i].Latitude,nfi);
-                    position.Longitude = Convert.ToDouble(items[i].Longitude,nfi);
-
-                    Geopoint geopoint = new Geopoint(position);
-
-                    PushPin pushpin = new PushPin();
-                    pushpin.Name = items[i].Soort;
-                    pushpin.Location = geopoint;
-
-
-                    pushpins.Add(pushpin);
-
-
-
-                }
-                Pushpins.ItemsSource = pushpins;
+               ZetLocatiesOpMap();
             }
         }
 
