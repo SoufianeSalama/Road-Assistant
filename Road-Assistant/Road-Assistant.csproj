@@ -98,6 +98,9 @@
     <Compile Include="Locatielijst.xaml.cs">
       <DependentUpon>Locatielijst.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Over.xaml.cs">
+      <DependentUpon>Over.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Places.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushPin.cs" />
@@ -130,6 +133,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Over.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Startpagina.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -157,9 +164,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SampleData\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
   </PropertyGroup>

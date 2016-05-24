@@ -168,4 +168,16 @@
   <data name="LabelBack.Label" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="TitleClickOnPushPin.Text" xml:space="preserve">
+    <value>Een Gevaarlijke Locatie</value>
+  </data>
+  <data name="LabelAbout.Label" xml:space="preserve">
+    <value>Over</value>
+  </data>
+  <data name="ContentAbout.Text" xml:space="preserve">
+    <value>Deze applicatie is gemaakt door Soufiane Salama als project voor het vak course Mobiele Apps 2016</value>
+  </data>
+  <data name="TextAbout.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
 </root>

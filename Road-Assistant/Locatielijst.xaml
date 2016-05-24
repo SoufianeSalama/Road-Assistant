@@ -15,13 +15,13 @@
     </Page.Background>
     
     
-    <Page.Resources>
+    <!--<Page.Resources>
         <Style x:Key="TextBlockStyle" TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="20"/>
         </Style>
-   </Page.Resources>
+   </Page.Resources>-->
     
     <Page.BottomAppBar>
         <CommandBar Background="#FF639C85">

@@ -168,4 +168,17 @@
   <data name="TitleLocations.Text" xml:space="preserve">
     <value>liste des localisation</value>
   </data>
+  <data name="TitleClickOnPushPin.Text" xml:space="preserve">
+    <value>Un Localistation Dangereuse</value>
+  </data>
+  <data name="LabelAbout.Label" xml:space="preserve">
+    <value>Vers</value>
+  </data>
+  <data name="ContentAbout.Text" xml:space="preserve">
+    <value>Cette application est réalisée par Soufiane Salama comme projet pour le course 
+Applications Mobiles 2016</value>
+  </data>
+  <data name="TextAbout.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
 </root>

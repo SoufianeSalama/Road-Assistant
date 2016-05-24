@@ -168,4 +168,16 @@
   <data name="TitleLocations.Text" xml:space="preserve">
     <value>locations list</value>
   </data>
+  <data name="TitleClickOnPushPin.Text" xml:space="preserve">
+    <value>A Dangerous Location</value>
+  </data>
+  <data name="LabelAbout.Label" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="ContentAbout.Text" xml:space="preserve">
+    <value>This application is made by Soufiane Salama as project for the course Mobile Apps 2016</value>
+  </data>
+  <data name="TextAbout.Text" xml:space="preserve">
+    <value>About</value>
+  </data>
 </root>

@@ -45,6 +45,7 @@ namespace Road_Assistant
 
         private Geolocator locator = new Geolocator();
         private Geoposition geoposition;
+        
         private BasicGeoposition basicGeoposition;
 
         private MessageDialog dialog;
@@ -64,6 +65,8 @@ namespace Road_Assistant
 
             nfi.NumberDecimalSeparator = ".";
             nfi.CurrencyDecimalDigits = 4;
+
+            
         }
 
         /// <summary>
@@ -97,24 +100,16 @@ namespace Road_Assistant
         private async  void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
             //  Kijken of de Locatie instelling aan staat (en internet)
-            StartControle();
+            StartControleAsync();
 
             // de data uit Azure halen en een lijst van objecten van de klasse Pushpin maken van de gekregen data
-            await GetLocaties();
+            await GetLocatiesAsync();
 
             // de positionChanged event parameters instellen 
             LocatieConfiguratie();
 
             // de geofence parameters isntellen
             GeofenceConfiguratie();
-
-            
-
-           
-
-
-
-
         }
 
 
@@ -159,7 +154,7 @@ namespace Road_Assistant
         #endregion
 
 
-        private async void StartControle()
+        private async void StartControleAsync()
         {
             //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
 
@@ -278,6 +273,8 @@ namespace Road_Assistant
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+
+
                 Geoposition currentPosition = args.Position;
 
                 Toonlocatie(currentPosition);
@@ -311,7 +308,7 @@ namespace Road_Assistant
         {
             MyMap.MapElements.Clear();
 
-            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 15);      // -> gaat inzoomen op uw huidige locatie
+            await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 17);      // -> gaat inzoomen op uw huidige locatie
 
             string TitlePosition = loader.GetString("TitlePosition/Text");
 
@@ -365,7 +362,7 @@ namespace Road_Assistant
             Pushpins.ItemsSource = pushpins;
         }
 
-        private async Task GetLocaties()
+        private async Task GetLocatiesAsync()
         {
             MobileServiceInvalidOperationException exception = null;
             try
@@ -398,20 +395,27 @@ namespace Road_Assistant
 
         private async void OnPushpinClicked(object sender, TappedRoutedEventArgs e)
         {
-            //Border border = sender as Border;
-            //PushPin selectedPushpin = border.DataContext as PushPin;
-            //MessageDialog dialog = new MessageDialog(selectedPushpin.Name);
-            //await dialog.ShowAsync();
+            
 
             Image image = sender as Image;
             PushPin selectedPushpin = image.DataContext as PushPin;
 
-            string titlePushPin = loader.GetString("TitlePushPinSoort/Text");
+            string ContentPushPin = loader.GetString("TitlePushPinSoort/Text");
+            string titlePushpin = loader.GetString("TitleClickOnPushPin/Text");
 
-            MessageDialog dialog = new MessageDialog(titlePushPin + selectedPushpin.Name);
+            dialog = new MessageDialog(ContentPushPin + selectedPushpin.Name);
+            dialog.Title = titlePushpin;
             await dialog.ShowAsync();
 
 
+        }
+
+        private void AboutAppBarMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Frame.Navigate(typeof(Over)))
+            {
+                throw new Exception("Failed to create initial page");
+            }
         }
     }
 }
