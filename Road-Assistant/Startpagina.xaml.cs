@@ -27,6 +27,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Globalization;
 using Windows.Storage;
+using Windows.ApplicationModel.Background;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -110,6 +111,8 @@ namespace Road_Assistant
 
             // de geofence parameters isntellen
             GeofenceConfiguratie();
+
+            await RegisterTask();
         }
 
 
@@ -154,6 +157,25 @@ namespace Road_Assistant
         #endregion
 
 
+        private async Task RegisterTask()
+        {
+            string taskName = "Geofence task";
+            bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
+            if (!isTaskRegisterd)
+            {
+                BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
+                builder.Name = taskName;
+                builder.TaskEntryPoint = "BTask.BackgroundTask";
+                builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
+
+                //builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
+                if (status != BackgroundAccessStatus.Denied)
+                {
+                    BackgroundTaskRegistration task = builder.Register();
+                }
+            }
+        }
         private async void StartControleAsync()
         {
             //http://aboutwindowsphoneandwindowsstore.blogspot.be/2014/10/how-to-show-message-dialog-box-in.html
