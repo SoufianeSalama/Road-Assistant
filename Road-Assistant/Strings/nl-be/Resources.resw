@@ -124,7 +124,7 @@
     <value>Instellingen</value>
   </data>
   <data name="ContentErrorLocation.Text" xml:space="preserve">
-    <value>De locatie service is uitgeschakeld!</value>
+    <value>De locatie service is uitgeschakeld of u bent niet verbonden met het internet!</value>
   </data>
   <data name="ContentWhereAmI.Text" xml:space="preserve">
     <value>U ben in de buurt van: </value>
@@ -179,5 +179,8 @@
   </data>
   <data name="TextAbout.Text" xml:space="preserve">
     <value>Over</value>
+  </data>
+  <data name="ContentErrorData.Text" xml:space="preserve">
+    <value>Error bij het laden van de data!</value>
   </data>
 </root>

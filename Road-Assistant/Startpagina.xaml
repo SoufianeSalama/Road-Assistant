@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
     mc:Ignorable="d">
-    
+
     <Page.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="Black" Offset="0"/>
@@ -18,7 +18,7 @@
     <Page.BottomAppBar>
         <CommandBar Background="#FF639C85">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Label="XX" x:Uid="LabelWhereAmI" Click="WaarBenIkAppBarButton_Click" Icon="World"/> 
+                <AppBarButton Label="XX" x:Uid="LabelWhereAmI" Click="WaarBenIkAppBarButton_Click" Icon="World"/>
                 <AppBarButton Label="XX" x:Uid="LabelLocations" Click="NavigeerLocaties_Click" Icon="Go"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
@@ -47,14 +47,14 @@
         </StackPanel>
 
         <!--TODO: Content should be placed within the following grid-->
-        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
-            
-            <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="0,0,1,0" Width="332" Grid.ColumnSpan="2">
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.167,19,10">
+
+            <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="14,0,16,0" Width="332">
                 <maps:MapItemsControl x:Name="Pushpins">
                     <maps:MapItemsControl.ItemTemplate>
                         <DataTemplate>
-                             <Image maps:MapControl.Location="{Binding Location}" Tapped="OnPushpinClicked"  Source="/Assets/Warning.png" Width="50" />
-                           
+                            <Image maps:MapControl.Location="{Binding Location}" Tapped="OnPushpinClicked"  Source="/Assets/Warning.png" Width="50" />
+
                         </DataTemplate>
                     </maps:MapItemsControl.ItemTemplate>
                 </maps:MapItemsControl>

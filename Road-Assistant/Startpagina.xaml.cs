@@ -28,6 +28,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Globalization;
 using Windows.Storage;
 using Windows.ApplicationModel.Background;
+using Windows.Data.Xml.Dom;
 
 // The Basic Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -159,7 +160,24 @@ namespace Road_Assistant
 
         private async Task RegisterTask()
         {
-            string taskName = "Geofence task";
+            //string taskName = "RoadAssistantGeofence";
+            //bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
+            //if (!isTaskRegisterd)
+            //{
+            //    BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
+            //    builder.Name = taskName;
+            //    builder.TaskEntryPoint = "BTask.BackgroundTask";
+            //    builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
+
+            //    builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+            //    BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
+            //    if (status != BackgroundAccessStatus.Denied)
+            //    {
+            //        BackgroundTaskRegistration task = builder.Register();
+            //    }
+            //}
+
+            string taskName = "Test task";
             bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
             if (!isTaskRegisterd)
             {
@@ -167,14 +185,13 @@ namespace Road_Assistant
                 builder.Name = taskName;
                 builder.TaskEntryPoint = "BTask.BackgroundTask";
                 builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
-
-                //builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
                 if (status != BackgroundAccessStatus.Denied)
                 {
                     BackgroundTaskRegistration task = builder.Register();
                 }
             }
+
         }
         private async void StartControleAsync()
         {
@@ -191,8 +208,8 @@ namespace Road_Assistant
 
 
 
-
-            if ((locator.LocationStatus == PositionStatus.Disabled) || (connectivityLevel == NetworkConnectivityLevel.LocalAccess))      // Controleren of locatie en internet aanstaat op het toestel
+            //
+            if ((locator.LocationStatus == PositionStatus.Disabled) || (connectivityLevel != NetworkConnectivityLevel.InternetAccess))      // Controleren of locatie en internet aanstaat op het toestel
             {
                 dialog = new MessageDialog(ContentErrorLocation);
                 dialog.Title = TitleErrorLocation;
@@ -215,14 +232,14 @@ namespace Road_Assistant
                     Application.Current.Exit();
                 }
 
-            }
+        }
             else
             {
                 GeofenceMonitor.Current.GeofenceStateChanged += Current_GeofenceStateChanged;
             }
-           
 
-        }
+
+}
 
         private void LocatieConfiguratie()
         {
@@ -307,7 +324,7 @@ namespace Road_Assistant
             
         private async void WaarBenIkAppBarButton_Click(object sender, RoutedEventArgs e)
         {
-           
+
             string title = loader.GetString("TitleWhereAmI/Text");
             string content = loader.GetString("ContentWhereAmI/Text");
 
@@ -317,13 +334,15 @@ namespace Road_Assistant
             if (result.Status == MapLocationFinderStatus.Success)
             {
                 MapAddress address = result.Locations.FirstOrDefault().Address;
-                string fullAddress = string.Format(address.Street + ", " +  address.Town);
-                
-                dialog = new MessageDialog( content + fullAddress);  
+                string fullAddress = string.Format(address.Street + ", " + address.Town);
+
+                dialog = new MessageDialog(content + fullAddress);
                 dialog.Title = title;
 
                 await dialog.ShowAsync();
             }
+
+
         }
 
         private async void Toonlocatie(Geoposition geoposition) 
@@ -333,14 +352,10 @@ namespace Road_Assistant
             await MyMap.TrySetViewAsync(geoposition.Coordinate.Point, 17);      // -> gaat inzoomen op uw huidige locatie
 
             string TitlePosition = loader.GetString("TitlePosition/Text");
-
-            //double lat = Convert.ToDouble()
-
-
+            
             MapIcon icon = new MapIcon();
             icon.Location = geoposition.Coordinate.Point;
 
-            //icon.Location = Convert.ToDouble(geoposition.Coordinate.Point.Position.Latitude, nfi);
             icon.Title = TitlePosition; // "Uw Positie";
 
             //icon.Image = RandomAccessStreamReference.CreateFromUri(new Uri("msappx:///Assets/logo.jpg"));
@@ -405,7 +420,9 @@ namespace Road_Assistant
 
             if (exception != null)
             {
-                await new MessageDialog(exception.Message, "Error bij het laden van de data!").ShowAsync();
+                string ContentErrorData = loader.GetString("ContentErrorData/Text");
+                
+                await new MessageDialog(exception.Message, ContentErrorData).ShowAsync();
 
             }
             else

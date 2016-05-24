@@ -53,7 +53,7 @@
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
 
-            <ListView Name="ListItems" > <!--IsItemClickEnabled="True" ItemClick="ListItems_ItemClick"-->
+            <ListView Name="ListItems" > 
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="5">

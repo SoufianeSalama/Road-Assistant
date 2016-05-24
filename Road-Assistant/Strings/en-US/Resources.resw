@@ -180,4 +180,7 @@
   <data name="TextAbout.Text" xml:space="preserve">
     <value>About</value>
   </data>
+  <data name="ContentErrorData.Text" xml:space="preserve">
+    <value>Error loading data!</value>
+  </data>
 </root>
