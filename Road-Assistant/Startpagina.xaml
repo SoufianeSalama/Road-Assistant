@@ -49,7 +49,7 @@
         <!--TODO: Content should be placed within the following grid-->
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.167,19,10">
 
-            <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="14,0,16,0" Width="332">
+            <maps:MapControl x:Name="MyMap" HorizontalAlignment="Center" Margin="14,0,16,0" Width="332" MapServiceToken="K38JSFqmSBMVu0iTXR4aEg">
                 <maps:MapItemsControl x:Name="Pushpins">
                     <maps:MapItemsControl.ItemTemplate>
                         <DataTemplate>

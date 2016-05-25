@@ -160,24 +160,7 @@ namespace Road_Assistant
 
         private async Task RegisterTask()
         {
-            //string taskName = "RoadAssistantGeofence";
-            //bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
-            //if (!isTaskRegisterd)
-            //{
-            //    BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
-            //    builder.Name = taskName;
-            //    builder.TaskEntryPoint = "BTask.BackgroundTask";
-            //    builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
-
-            //    builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-            //    BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
-            //    if (status != BackgroundAccessStatus.Denied)
-            //    {
-            //        BackgroundTaskRegistration task = builder.Register();
-            //    }
-            //}
-
-            string taskName = "Test task";
+            string taskName = "RoadAssistantGeofence1";
             bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
             if (!isTaskRegisterd)
             {
@@ -185,12 +168,29 @@ namespace Road_Assistant
                 builder.Name = taskName;
                 builder.TaskEntryPoint = "BTask.BackgroundTask";
                 builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
+
+                builder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
                 if (status != BackgroundAccessStatus.Denied)
                 {
                     BackgroundTaskRegistration task = builder.Register();
                 }
             }
+
+            //string taskName = "Test task";
+            //bool isTaskRegisterd = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == taskName);
+            //if (!isTaskRegisterd)
+            //{
+            //    BackgroundTaskBuilder builder = new BackgroundTaskBuilder();
+            //    builder.Name = taskName;
+            //    builder.TaskEntryPoint = "BTask.BackgroundTask";
+            //    builder.SetTrigger(new LocationTrigger(LocationTriggerType.Geofence));
+            //    BackgroundAccessStatus status = await BackgroundExecutionManager.RequestAccessAsync();
+            //    if (status != BackgroundAccessStatus.Denied)
+            //    {
+            //        BackgroundTaskRegistration task = builder.Register();
+            //    }
+            //}
 
         }
         private async void StartControleAsync()
